@@ -12,5 +12,5 @@ using server.Models;
         {
         }
 
-        public DbSet<server.Models.Product> Product { get; set; } = default!;
+        public DbSet<Product> Product { get; set; } = default!;
     }

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+// using server.Script;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbContext") ?? throw new InvalidOperationException("Connection string 'DbContext' not found.")));
@@ -12,6 +14,22 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// using(var scope = app.Services.CreateScope())
+// {
+//     var services = scope.ServiceProvider;
+
+//     try
+//     {
+//         var dbContext = services.GetRequiredService<DbContext>();
+//         var scriptingClass = new DataScript(dbContext);
+//         scriptingClass.PopulateMilk();
+//     }
+//     catch (Exception ex)
+//     {
+//         Console.WriteLine(ex);
+//     }
+// }
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
