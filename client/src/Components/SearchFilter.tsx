@@ -14,7 +14,7 @@ function SearchFilter({SearchFilterProps}: {SearchFilterProps: ISearchFilterProp
             <button onClick={SearchFilterProps.handleSearch}><i className="fa fa-search"></i></button>
           </div>
 
-          <select className="filter-select" onChange={(e) => SearchFilterProps.setFilterType(e.target.value)}>
+          <select className="filter-select" onChange={(e) => {SearchFilterProps.setFilterType(e.target.value)}}>
             <option value="">All</option>
             <option value="Almond milk">Almond milk</option>
             <option value="Cashew milk">Cashew milk</option>

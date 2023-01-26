@@ -4,6 +4,14 @@ import './App.css';
 import { BrowserRouter, Link, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home';
 
+export interface ProductResponse {
+  products: ProductInfo[],
+  total: number,
+  recieved: number,
+  page: number,
+  maxPage: number
+}
+
 export interface ProductInfo {
   id: string;
   name: string;

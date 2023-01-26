@@ -22,17 +22,40 @@ public class ProductsController : Controller
     // Can probably improve the filter method. Error when filtering for non-existing product. Why?
     [HttpGet]
     [Route("Products")]
-    public List<Product> Products([FromQuery(Name = "page")] int page = 1, [FromQuery(Name = "filter")] string filter = "none") 
+    public ProductDTO Products([FromQuery(Name = "page")] int page = 1, [FromQuery(Name = "filter")] string filter = "none") 
     {
         if(page < 1) page = 1;
         if(filter == "none") {
-            int totalPages = (int)Math.Ceiling((double) _dbContext.Product.Count()) / 9;
+            int totalProducts = _dbContext.Product.Count();
+
+            int totalPages = (int)Math.Ceiling((double) _dbContext.Product.Count() / 9) ;
             if(page > totalPages) page = totalPages;
-            return _dbContext.Product.Skip((page - 1) * 9).Take(9).ToList();
-        } else {
+            var products = _dbContext.Product.Skip((page - 1) * 9).Take(9).ToList();
+            return new ProductDTO
+            {
+                Products = products,
+                Total = totalProducts,
+                Recieved = products.Count(),
+                Page = page,
+                MaxPage = totalPages
+            };
+        } 
+        else 
+        {
+            int totalProducts = _dbContext.Product.Where(p => p.type == filter).Count();
+
             int totalPages = (int)Math.Ceiling((double) _dbContext.Product.Where(p => p.type == filter).Count() / 9);
             if(page > totalPages) page = totalPages;
-            return _dbContext.Product.Where(p => p.type == filter).Skip((page - 1) * 9).Take(9).ToList();
+            var products = _dbContext.Product.Where(p => p.type == filter).Skip((page - 1) * 9).Take(9).ToList();
+
+            return new ProductDTO
+            {
+                Products = products,
+                Total = totalProducts,
+                Recieved = products.Count(),
+                Page = page,
+                MaxPage = totalPages
+            };
         }
     }
 }
