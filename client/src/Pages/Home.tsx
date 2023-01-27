@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import '../css/home.css';
-import { ProductInfo, ProductResponse } from '../App';
+import { ProductResponse } from '../App';
 import SearchFilter from '../Components/SearchFilter';
 import OneProduct from '../Components/OneProduct';
 
@@ -37,7 +37,8 @@ function Home() {
   }
 
   const handleSearch = () => {
-    fetch(`http://localhost:5012/api/Products?filter=${filterType}`)
+    console.log(`http://localhost:5012/api/Products?filter=${filterType}&search=${filterSearch}`);
+    fetch(`http://localhost:5012/api/Products?filter=${filterType}&search=${filterSearch}`)
     .then(p => p.json())
     .then(p => setProductResponse(p));
   }
@@ -46,32 +47,29 @@ function Home() {
     handleSearch();
   }, [filterType]);
 
-
   const SearchFilterProps: ISearchFilterProps = {
     setFilterType: setFilterType,
     setFilterSearch: setFilterSearch,
     handleSearch: handleSearch,
   }
 
-  const dostuff = () => {
-    console.log(filterType, filterSearch);
+  const ShowMoreButton = () => {
+    if(productResponse.page < productResponse.maxPage) {
+      return <button onClick={loadMore} className="show-more">Show more</button>
+    }
   }
+
   return (
       <div className="home">
         <h1 className="main-header">THE MILK STORE</h1>
-        
         <div className="home-container">
-          <button onClick={dostuff}>Do stuff</button>
           <SearchFilter SearchFilterProps={SearchFilterProps} />
-          <p className="product-count">99 Products</p>
+          <p className="product-count">Showing {productResponse.products.length} out of {productResponse.total} products</p>
           <div className="products-container">
             {productResponse.products.map(p => <OneProduct key={p.id} ProductData={p} />)}
           </div>
-          <button onClick={loadMore} className="show-more">Show more</button>
-          {/* {if({iProducts.page == iProducts.maxPage}) <button>Hello</button>} */}
-          {/* <button onClick={loadMore} className="show-more">Show more</button> */}
+          {ShowMoreButton()}
         </div>
-
       </div>
   );
 }

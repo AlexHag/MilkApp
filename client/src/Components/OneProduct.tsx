@@ -6,7 +6,7 @@ function OneProduct({ProductData}: {ProductData: ProductInfo}) {
   return (
     <div className="one-product">
       <div className="product-image">
-        <img src={milk} />
+        <img src={milk} alt="milk"/>
       </div>
       <div className="product-details">
         <p>{ProductData.name}</p>

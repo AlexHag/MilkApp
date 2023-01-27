@@ -19,43 +19,34 @@ public class ProductsController : Controller
         return _dbContext.Product.ToList();
     }
 
-    // Can probably improve the filter method. Error when filtering for non-existing product. Why?
     [HttpGet]
     [Route("Products")]
-    public ProductDTO Products([FromQuery(Name = "page")] int page = 1, [FromQuery(Name = "filter")] string filter = "none") 
+    public IActionResult Products(int? page = null, string? filter = null, string? search = null)
     {
-        if(page < 1) page = 1;
-        if(filter == "none") {
-            int totalProducts = _dbContext.Product.Count();
+        var query = _dbContext.Product.AsQueryable();
 
-            int totalPages = (int)Math.Ceiling((double) _dbContext.Product.Count() / 9) ;
-            if(page > totalPages) page = totalPages;
-            var products = _dbContext.Product.Skip((page - 1) * 9).Take(9).ToList();
-            return new ProductDTO
-            {
-                Products = products,
-                Total = totalProducts,
-                Recieved = products.Count(),
-                Page = page,
-                MaxPage = totalPages
-            };
-        } 
-        else 
+        if(!string.IsNullOrEmpty(filter))
         {
-            int totalProducts = _dbContext.Product.Where(p => p.type == filter).Count();
-
-            int totalPages = (int)Math.Ceiling((double) _dbContext.Product.Where(p => p.type == filter).Count() / 9);
-            if(page > totalPages) page = totalPages;
-            var products = _dbContext.Product.Where(p => p.type == filter).Skip((page - 1) * 9).Take(9).ToList();
-
-            return new ProductDTO
-            {
-                Products = products,
-                Total = totalProducts,
-                Recieved = products.Count(),
-                Page = page,
-                MaxPage = totalPages
-            };
+            query = query.Where(p => p.type == filter);
         }
+        if(!string.IsNullOrEmpty(search))
+        {
+            query = query.Where(p => p.name.StartsWith(search));
+        }
+
+        var pageNumber = page ?? 1;
+        var totalProducts = query.Count();
+        var maxPage = (int)Math.Ceiling((double) totalProducts / 9);
+        var products = query.Skip((pageNumber - 1) * 9).Take(9);
+        var recived = products.Count();
+        var response = new ProductDTO
+        {
+            Products = products.ToList(),
+            Total = totalProducts,
+            Recieved = recived,
+            Page = pageNumber,
+            MaxPage = maxPage
+        };
+        return Ok(response);
     }
 }
