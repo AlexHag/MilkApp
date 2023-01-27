@@ -13,7 +13,7 @@ export interface ISearchFilterProps {
 
 function Home() {
   const [productResponse, setProductResponse] = useState<ProductResponse>({products:[],total:0,recieved:0,page:1,maxPage:0});
-  const [filterType, setFilterType] = useState<string>('none');
+  const [filterType, setFilterType] = useState<string>('');
   const [filterSearch, setFilterSearch] = useState<string>('');
 
   useEffect(() => {

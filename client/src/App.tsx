@@ -1,6 +1,7 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home';
+import OneProductPage from './Pages/OneProductPage';
 
 export interface ProductResponse {
   products: ProductInfo[],
@@ -23,6 +24,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/Products/:id" element={<OneProductPage />} />
         </Routes>
       </BrowserRouter>
     </div>

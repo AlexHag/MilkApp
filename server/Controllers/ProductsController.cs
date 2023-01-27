@@ -49,4 +49,13 @@ public class ProductsController : Controller
         };
         return Ok(response);
     }
+
+    [HttpGet]
+    [Route("Product/{id}")]
+    public IActionResult OneProduct(string id)
+    {
+        var product = _dbContext.Product.Where(p => p.id == id).FirstOrDefault();
+        if(product == null) return NotFound();
+        return Ok(product);
+    }
 }
